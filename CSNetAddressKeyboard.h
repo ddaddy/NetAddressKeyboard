@@ -11,5 +11,6 @@ extern NSString *const CSNetAddressKeyboardIPv4;
 extern NSString *const CSNetAddressKeyboardIPv6;
 
 - (CSNetAddressKeyboard *)initWithTextField:(UITextField *)textField keyboardLayout:(NSString*)keyboardLayout;
+- (CSNetAddressKeyboard *)initWithTextField:(UITextField *)textField keyboardLayout:(NSString*)keyboardLayout delegate:(id<UITextFieldDelegate>)delegateCallback;
 
 @end

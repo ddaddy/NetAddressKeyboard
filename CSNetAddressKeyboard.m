@@ -12,6 +12,7 @@ NSString *const CSNetAddressKeyboardIPv6 = @"CSNetAddressKeyboardIPv6";
 
 @interface CSNetAddressKeyboard () {
     __weak UITextField *_textField;
+    __weak id<UITextFieldDelegate> _delegateCallback;
     NSString *_keyboardLayout;
     
     UIColor *kBackgroundColor;
@@ -63,8 +64,17 @@ NSString *const CSNetAddressKeyboardIPv6 = @"CSNetAddressKeyboardIPv6";
     return self;
 }
 
+- (CSNetAddressKeyboard *)initWithTextField:(UITextField *)textField keyboardLayout:(NSString *)keyboardLayout delegate:(id<UITextFieldDelegate>)delegateCallback
+{
+    self = [self initWithTextField:textField keyboardLayout:keyboardLayout];
+    _delegateCallback = delegateCallback;
+    
+    return self;
+}
+
 -(void) dealloc
 {
+    _delegateCallback = nil;
     _textField.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
@@ -248,6 +258,8 @@ NSString *const CSNetAddressKeyboardIPv6 = @"CSNetAddressKeyboardIPv6";
     [_textField sendActionsForControlEvents:UIControlEventEditingChanged];
 }
 
+#pragma mark UITextField delegate
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     if (textField == _textField)
@@ -272,6 +284,54 @@ NSString *const CSNetAddressKeyboardIPv6 = @"CSNetAddressKeyboardIPv6";
     }
     return YES;
 }
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if ([_delegateCallback respondsToSelector:@selector(textFieldShouldBeginEditing:)]) {
+        return [_delegateCallback textFieldShouldBeginEditing:textField];
+    }
+    return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if ([_delegateCallback respondsToSelector:@selector(textFieldDidBeginEditing:)]) {
+        [_delegateCallback textFieldDidBeginEditing:textField];
+    }
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    if ([_delegateCallback respondsToSelector:@selector(textFieldShouldEndEditing:)]) {
+        return [_delegateCallback textFieldShouldEndEditing:textField];
+    }
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if ([_delegateCallback respondsToSelector:@selector(textFieldDidEndEditing:)]) {
+        [_delegateCallback textFieldDidEndEditing:textField];
+    }
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    if ([_delegateCallback respondsToSelector:@selector(textFieldShouldClear:)]) {
+        return [_delegateCallback textFieldShouldClear:textField];
+    }
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([_delegateCallback respondsToSelector:@selector(textFieldShouldReturn:)]) {
+        return [_delegateCallback textFieldShouldReturn:textField];
+    }
+    return YES;
+}
+
+#pragma mark Rotation
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification
 {
