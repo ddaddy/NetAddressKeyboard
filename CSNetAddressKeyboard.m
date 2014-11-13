@@ -65,6 +65,7 @@ NSString *const CSNetAddressKeyboardIPv6 = @"CSNetAddressKeyboardIPv6";
 
 -(void) dealloc
 {
+    _textField.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
